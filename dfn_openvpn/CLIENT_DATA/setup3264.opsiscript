@@ -1,0 +1,151 @@
+; Copyright (c) uib gmbh (www.uib.de)
+; This sourcecode is owned by uib gmbh
+; and published under the Terms of the General Public License.
+; credits: http://www.opsi.org/en/credits/
+
+[Actions]
+; insert common values
+include_insert "common.opsiinc"
+
+if not(HasMinimumSpace ("%SystemDrive%", $MinimumSpace$))
+	LogError "Not enough space on %SystemDrive%, " + $MinimumSpace$ + " on drive %SystemDrive% needed for " + $ProductId$
+	isFatalError
+	; Stop process and set installation status to failed
+else
+	comment "Show product picture"
+	ShowBitmap "%ScriptPath%\" + $ProductId$ + ".png" $ProductName$
+	
+	if FileExists("%ScriptPath%\delsub3264.opsiscript")
+		comment "Start uninstall sub section"
+		Sub "%ScriptPath%\delsub3264.opsiscript"
+	endif
+	
+	if (not(($WindowsNTVersion$ = "10.0") or ($WindowsNTVersion$ = "6.1")))
+		LogWarning "Only tested with Windows 10 (x86 and x64) and Windows 7 x64"
+	endif
+	
+	if GetProductProperty("install-service", "true") = "true"
+		set $InstallService$ = "/SELECT_SERVICE=1"
+	else
+		set $InstallService$ = "/SELECT_SERVICE=0"
+	endif
+	
+	if GetProductProperty("install-tap", "true") = "true"
+		set $InstallTAP$ = "/SELECT_TAP=1"
+	else
+		set $InstallTAP$ = "/SELECT_TAP=0"
+	endif
+	
+	if GetProductProperty("install-gui", "true") = "true"
+		set $InstallGUI$ = "/SELECT_OPENVPNGUI=1"
+	else
+		set $InstallGUI$ = "/SELECT_OPENVPNGUI=0"
+	endif
+	
+	if GetProductProperty("install-openssl-utilities", "false") = "true"
+		set $InstallOpenSSLUtilities$ = "/SELECT_OPENSSL_UTILITIES=1"
+	else
+		set $InstallOpenSSLUtilities$ = "/SELECT_OPENSSL_UTILITIES=0"
+	endif
+	
+	if GetProductProperty("install-easyrsa", "false") = "true"
+		set $InstallEasyRSA$ = "/SELECT_EASYRSA=1"
+	else
+		set $InstallEasyRSA$ = "/SELECT_EASYRSA=0"
+	endif
+	
+	comment "installing"
+
+	Winbatch_add_cert
+	
+	if ($INST_SystemType$ = "x86 System")
+		Message "Installing " + $ProductId$ + " 32 Bit..."
+		comment "Start setup program"
+		ChangeDirectory "%SCRIPTPATH%"
+		Winbatch_install_32
+		Sub_check_exitcode
+	endif
+
+	if ($INST_SystemType$ = "64 Bit System")
+		Message "Installing " + $ProductId$ + " 64 Bit..."
+		comment "Start setup program"
+		ChangeDirectory "%SCRIPTPATH%"
+		Winbatch_install_64
+		Sub_check_exitcode
+	endif
+	
+	if GetProductProperty("first-start-as-non-admin", "true") = "true"
+		Registry_NoAdmin /SysNative
+	endif
+	
+	if GetProductProperty("desktopicon", "true") = "false"
+		LinkFolder_delete_icon
+	endif
+	
+	if GetProductProperty("copy-config-files", "true") = "true"
+		if FileExists("%SCRIPTPATH%\custom\config")
+			Files_copy_config
+		else
+			LogWarning "No config files found! You can either put the config files in %SCRIPTPATH%\custom\config and they will be copied automatically"
+			LogWarning	"You can also put them in the " + $Installdir$ + "\config folder by hand or via script"
+		endif
+	else
+		LogWarning "OpenVPN needs config files to work correctly, please make sure to put config files in the " + $Installdir$ + "\config folder"
+	endif
+		
+	
+	comment "include custom post install file"
+	set $CustomPostInstall$ = GetProductProperty("custom-post-install","none")
+	if not ($CustomPostInstall$ = "none")
+		if FileExists("%SCRIPTPATH%\custom\" + $CustomPostInstall$)
+			sub "%SCRIPTPATH%\custom\" + $CustomPostInstall$
+		endif
+	endif
+	
+	;Winbatch_remove_cert
+		
+endif
+
+[Files_copy_config]
+copy -s "%SCRIPTPATH%\custom\config\*" "$InstallDir$\config\"
+
+[LinkFolder_delete_icon]
+set_basefolder common_desktopdirectory
+set_subfolder .
+delete_element "OpenVPN GUI"
+
+[Winbatch_add_cert]
+certutil -addstore TrustedPublisher "%SCRIPTPATH%\openvpn.cer"
+
+[Winbatch_install_32]
+"%SCRIPTPATH%\openvpn-install-2.3.8-I601-i686.exe" /S $SetDesktopIcon$ $InstallService$ $InstallTAP$ $InstallGUI$ $InstallOpenSSLUtilities$ $InstallEasyRSA$
+
+[Winbatch_install_64]
+"%SCRIPTPATH%\openvpn-install-2.3.8-I601-x64.exe" /S $SetDesktopIcon$ $InstallService$ $InstallTAP$ $InstallGUI$ $InstallOpenSSLUtilities$ $InstallEasyRSA$
+
+;[Winbatch_remove_cert]
+;certutil -delstore TrustedPublisher "OpenVPN Technologies, Inc."
+
+[Registry_NoAdmin]
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\OpenVPN-GUI]
+set "config_dir" = "$InstallDir$\config"
+set "config_ext" = "ovpn"
+set "exe_path" = "$InstallDir$\bin\openvpn.exe"
+set "log_dir" = "$InstallDir$\log"
+set "log_append" = "0"
+set "priority" = "NORMAL_PRIORITY_CLASS"
+set "log_viewer" = "%Systemroot%\notepad.exe"
+set "editor" = "%Systemroot%\notepad.exe"
+set "allow_edit" = "1"
+set "allow_service" = "0"
+set "allow_password" = "1"
+set "allow_proxy" = "1"
+set "service_only" = "0"
+set "show_balloon" = "1"
+set "silent_connection" = "0"
+set "show_script_window" = "1"
+set "disconnect_on_suspend" = "1"
+set "passphrase_attempts" = "3"
+set "connectscript_timeout" = "15"
+set "disconnectscript_timeout" = "10"
+set "preconnectscript_timeout" = "10"

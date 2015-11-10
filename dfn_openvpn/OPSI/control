@@ -1,0 +1,118 @@
+[Package]
+version: 3
+depends: 
+incremental: False
+
+[Product]
+type: localboot
+id: dfn_openvpn
+name: Open VPN Client
+description: Open VPN is an open-source VPN application
+advice: 
+version: 2.3.8
+priority: 0
+licenseRequired: False
+productClasses: 
+setupScript: setup3264.opsiscript
+uninstallScript: uninstall3264.opsiscript
+updateScript: 
+alwaysScript: 
+onceScript: 
+customScript: 
+userLoginScript: 
+
+[ProductProperty]
+type: bool
+name: first-start-as-non-admin
+description: First start as non-admin? Administrator privileges are necessary to create a registry key and to set values
+default: True
+
+[ProductProperty]
+type: bool
+name: desktopicon
+description: Create desktop shortcut
+default: True
+
+[ProductProperty]
+type: bool
+name: install-service
+description: Install the OpenVPN service
+default: True
+
+[ProductProperty]
+type: bool
+name: install-tap
+description: Install the TAP device driver
+default: True
+
+[ProductProperty]
+type: bool
+name: copy-config-files
+description: Leave as True if you want the script to automatically copy the OpenVPN config files from the Scriptpath\custom\config folder to the OpenVPN config folder
+default: True
+
+[ProductProperty]
+type: bool
+name: install-gui
+description: Install the default OpenVPN GUI
+default: True
+
+[ProductProperty]
+type: bool
+name: install-openssl-utilities
+description: Install the utilities for generating public/private key pairs
+default: False
+
+[ProductProperty]
+type: bool
+name: install-easyrsa
+description: Install the RSA X509 certificate management scripts
+default: False
+
+[ProductProperty]
+type: unicode
+name: custom-post-install
+multivalue: False
+editable: True
+description: Define filename for include script in custom directory after installation
+values: ["none", "post-install.opsiinc", "post-install.opsiscript"]
+default: ["none"]
+
+[ProductProperty]
+type: unicode
+name: custom-post-uninstall
+multivalue: False
+editable: True
+description: Define filename for include script in custom directory after uninstallation
+values: ["none", "post-uninstall.opsiinc", "post-uninstall.opsiscript"]
+default: ["none"]
+
+[Changelog]
+dfn_openvpn (2.3.8-1) stable; urgency=low
+
+  * Initial package
+
+ -- Kevin Fafrowicz<fafrowicz@kit.edu>  Tue, 04 Nov 2015 17:30:00 +0000
+
+dfn_openvpn (2.3.8-2) stable; urgency=low
+
+  * Some fixes implemented
+
+ -- Kevin Fafrowicz, Christoph Walenta <fafrowicz@kit.edu, walenta@kit.edu>  Thu, 05 Nov 2015 15:30:00 +0000
+
+dfn_openvpn (2.3.8-3) stable; urgency=low
+
+  * Small additions
+
+  -- Kevin Fafrowicz <fafrowicz@kit.edu>  Fri, 06 Nov 2015 08:45:00 +0000
+
+
+
+
+
+
+
+
+
+
+

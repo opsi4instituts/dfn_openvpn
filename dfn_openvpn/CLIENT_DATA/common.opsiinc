@@ -1,0 +1,39 @@
+requiredWinstVersion >= "4.11.4.6"
+SetLogLevel = 7
+
+DefVar $UninstallProgram$
+DefVar $InstallDir$
+DefVar $LogDir$
+DefVar $ProductId$  
+DefVar $MinimumSpace$
+DefVar $ExitCode$
+DefVar $INST_SystemType$
+DefVar $INST_architecture$
+DefVar $WindowsNTVersion$
+DefVar $CustomPostUninstall$
+DefVar $CustomPostInstall$
+DefVar $SetDesktopIcon$
+DefVar $InstallService$
+DefVar $InstallGUI$
+DefVar $InstallTAP$
+DefVar $InstallOpenSSLUtilities$
+DefVar $InstallEasyRSA$
+DefVar $ProgramIcon$
+DefVar $PathToExe$	
+DefVar $ProductName$
+
+Set $INST_SystemType$ = GetSystemType
+Set $WindowsNTVersion$ = GetMsVersionInfo
+
+; ----------------------------------------------------------------
+Set $LogDir$				= "%opsiLogDir%"
+Set $ProductId$				= "dfn_openvpn"
+Set $ProductName$			= "OpenVPN"
+Set $MinimumSpace$			= "10 MB"
+Set $InstallDir$			= "%ProgramFilesSysnativeDir%\OpenVPN"
+Set $UninstallProgram$		= $InstallDir$ + "\Uninstall.exe"
+Set $PathToExe$				= $InstallDir$ + "\bin\openvpn-gui.exe"
+Set $ProgramIcon$			= $InstallDir$ + "\icon.ico"
+; ----------------------------------------------------------------
+
+include_append "section_sub_check_exitcode.opsiinc"

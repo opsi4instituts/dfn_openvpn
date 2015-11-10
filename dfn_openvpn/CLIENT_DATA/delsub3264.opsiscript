@@ -1,0 +1,33 @@
+; Copyright (c) uib gmbh (www.uib.de)
+; This sourcecode is owned by uib gmbh
+; and published under the Terms of the General Public License.
+; credits: http://www.opsi.org/en/credits/
+
+if FileExists($UninstallProgram$)
+	comment "Uninstall program found, starting uninstall"
+	Winbatch_uninstall
+	Sub_check_exitcode
+endif
+
+if FileExists($InstallDir$)
+	Files_delete
+endif
+
+comment "include custom post uninstall file"
+set $CustomPostUninstall$ = GetProductProperty("custom-post-uninstall","none")
+if not ($CustomPostUninstall$ = "none")
+	if FileExists("%ScriptPath%\custom\" + $CustomPostUninstall$)
+		sub "%ScriptPath%\custom\" + $CustomPostUninstall$
+	endif
+endif
+
+Registry_delete_NonAdminKey
+
+[Winbatch_uninstall]
+"$UninstallProgram$" /S
+
+[Registry_delete_NonAdminKey]
+DeleteKey [HKEY_LOCAL_MACHINE\SOFTWARE\OpenVPN-GUI]
+
+[Files_delete]
+del -sf "$InstallDir$"
