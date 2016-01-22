@@ -10,7 +10,7 @@ include_insert "common.opsiinc"
 comment "Show product picture"
 ShowBitmap "%ScriptPath%\" + $ProductId$ + ".png" $ProductName$
 
-Message "Uninstalling " + $ProductId$ + " ..."
+Message "Uninstalling " + $ProductName$ + " ..."
 
 if FileExists("%ScriptPath%\delsub3264.opsiscript")
 	comment "Start uninstall sub section"

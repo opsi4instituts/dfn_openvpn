@@ -21,10 +21,17 @@ DefVar $InstallEasyRSA$
 DefVar $ProgramIcon$
 DefVar $PathToExe$	
 DefVar $ProductName$
+DefVar $SetupFile64$
+DefVar $SetupFile32$
+DefVar $SetupFile$
+DefVar $ProductVersion$
 
-Set $INST_SystemType$ = GetSystemType
-Set $WindowsNTVersion$ = GetMsVersionInfo
-
+Set $INST_SystemType$ 		= GetSystemType
+Set $WindowsNTVersion$ 		= GetMsVersionInfo
+; ----------------------------------------------------------------
+Set $ProductVersion$		= strPart("%installingProdVersion%", "1", calculate(strPos("%installingProdVersion%","-") + "-" + "1" ))
+Set $SetupFile64$ 			= "openvpn-install-" + $ProductVersion$ + "-I601-x86_64.exe"
+Set $SetupFile32$ 			= "openvpn-install-" + $ProductVersion$ + "-I601-i686.exe"
 ; ----------------------------------------------------------------
 Set $LogDir$				= "%opsiLogDir%"
 Set $ProductId$				= "dfn_openvpn"

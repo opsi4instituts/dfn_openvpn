@@ -1,5 +1,5 @@
 [Package]
-version: 3
+version: 2
 depends: 
 incremental: False
 
@@ -9,7 +9,7 @@ id: dfn_openvpn
 name: Open VPN Client
 description: Open VPN is an open-source VPN application
 advice: 
-version: 2.3.8
+version: 2.3.10
 priority: 0
 licenseRequired: False
 productClasses: 
@@ -75,7 +75,7 @@ name: custom-post-install
 multivalue: False
 editable: True
 description: Define filename for include script in custom directory after installation
-values: ["none", "post-install.opsiinc", "post-install.opsiscript"]
+values: ["none", "post-install.opsiscript"]
 default: ["none"]
 
 [ProductProperty]
@@ -84,27 +84,40 @@ name: custom-post-uninstall
 multivalue: False
 editable: True
 description: Define filename for include script in custom directory after uninstallation
-values: ["none", "post-uninstall.opsiinc", "post-uninstall.opsiscript"]
+values: ["none", "post-uninstall.opsiscript"]
 default: ["none"]
 
 [Changelog]
+dfn_openvpn (2.3.10-2) stable; urgency=low
+
+  * minor changes in the code
+
+  -- Kevin Fafrowicz  <opsi@wiwi.kit.edu>  Tue, 12 Jan 2016
+
+dfn_openvpn (2.3.10-1) stable; urgency=low
+
+  * minor update
+
+  -- Detlef Krummel  <krummel@gei.de>  Tue, 05 Jan 2016
+
+ dfn_openvpn (2.3.8-3) stable; urgency=low
+
+  * Small additions
+
+  -- Kevin Fafrowicz <opsi@wiwi.kit.edu>  Fri, 06 Nov 2015 08:45:00 +0000
+
+ dfn_openvpn (2.3.8-2) stable; urgency=low
+
+  * Some fixes
+
+ -- Kevin Fafrowicz, Christoph Walenta <opsi@wiwi.kit.edu>  Thu, 05 Nov 2015 15:30:00 +0000
+
 dfn_openvpn (2.3.8-1) stable; urgency=low
 
   * Initial package
 
- -- Kevin Fafrowicz<fafrowicz@kit.edu>  Tue, 04 Nov 2015 17:30:00 +0000
+ -- Kevin Fafrowicz<opsi@wiwi.kit.edu>  Tue, 04 Nov 2015 17:30:00 +0000
 
-dfn_openvpn (2.3.8-2) stable; urgency=low
-
-  * Some fixes implemented
-
- -- Kevin Fafrowicz, Christoph Walenta <fafrowicz@kit.edu, walenta@kit.edu>  Thu, 05 Nov 2015 15:30:00 +0000
-
-dfn_openvpn (2.3.8-3) stable; urgency=low
-
-  * Small additions
-
-  -- Kevin Fafrowicz <fafrowicz@kit.edu>  Fri, 06 Nov 2015 08:45:00 +0000
 
 
 

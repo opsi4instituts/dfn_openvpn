@@ -7,6 +7,8 @@
 ; insert common values
 include_insert "common.opsiinc"
 
+Message "installing " + $ProductName$ + " (" + $ProductVersion$ + ")..."
+
 if not(HasMinimumSpace ("%SystemDrive%", $MinimumSpace$))
 	LogError "Not enough space on %SystemDrive%, " + $MinimumSpace$ + " on drive %SystemDrive% needed for " + $ProductId$
 	isFatalError
@@ -20,8 +22,8 @@ else
 		Sub "%ScriptPath%\delsub3264.opsiscript"
 	endif
 	
-	if (not(($WindowsNTVersion$ = "10.0") or ($WindowsNTVersion$ = "6.1")))
-		LogWarning "Only tested with Windows 10 (x86 and x64) and Windows 7 x64"
+	if not($WindowsNTVersion$ = "10.0")
+		LogWarning "Only tested with Windows 10!"
 	endif
 	
 	if GetProductProperty("install-service", "true") = "true"
@@ -58,21 +60,20 @@ else
 
 	Winbatch_add_cert
 	
+    comment "Start setup program"
+	ChangeDirectory "%SCRIPTPATH%"
 	if ($INST_SystemType$ = "x86 System")
-		Message "Installing " + $ProductId$ + " 32 Bit..."
-		comment "Start setup program"
-		ChangeDirectory "%SCRIPTPATH%"
-		Winbatch_install_32
-		Sub_check_exitcode
+		Message "installing " + $ProductName$ + " (" + $ProductVersion$ + ") 32 Bit..."
+		;Winbatch_install_32
+		Set $SetupFile$ = $SetupFile32$
 	endif
-
 	if ($INST_SystemType$ = "64 Bit System")
-		Message "Installing " + $ProductId$ + " 64 Bit..."
-		comment "Start setup program"
-		ChangeDirectory "%SCRIPTPATH%"
-		Winbatch_install_64
-		Sub_check_exitcode
+		Message "installing " + $ProductName$ + " (" + $ProductVersion$ + ") 64 Bit..."
+		;Winbatch_install_64
+		Set $SetupFile$ = $SetupFile64$
 	endif
+	Winbatch_install
+	Sub_check_exitcode
 	
 	if GetProductProperty("first-start-as-non-admin", "true") = "true"
 		Registry_NoAdmin /SysNative
@@ -117,12 +118,6 @@ delete_element "OpenVPN GUI"
 [Winbatch_add_cert]
 certutil -addstore TrustedPublisher "%SCRIPTPATH%\openvpn.cer"
 
-[Winbatch_install_32]
-"%SCRIPTPATH%\openvpn-install-2.3.8-I601-i686.exe" /S $SetDesktopIcon$ $InstallService$ $InstallTAP$ $InstallGUI$ $InstallOpenSSLUtilities$ $InstallEasyRSA$
-
-[Winbatch_install_64]
-"%SCRIPTPATH%\openvpn-install-2.3.8-I601-x64.exe" /S $SetDesktopIcon$ $InstallService$ $InstallTAP$ $InstallGUI$ $InstallOpenSSLUtilities$ $InstallEasyRSA$
-
 ;[Winbatch_remove_cert]
 ;certutil -delstore TrustedPublisher "OpenVPN Technologies, Inc."
 
@@ -149,3 +144,6 @@ set "passphrase_attempts" = "3"
 set "connectscript_timeout" = "15"
 set "disconnectscript_timeout" = "10"
 set "preconnectscript_timeout" = "10"
+
+[Winbatch_install]
+"%SCRIPTPATH%\$SetupFile$" /S $SetDesktopIcon$ $InstallService$ $InstallTAP$ $InstallGUI$ $InstallOpenSSLUtilities$ $InstallEasyRSA$
